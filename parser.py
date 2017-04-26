@@ -50,7 +50,9 @@ ARG_COMMANDS = [ 'line', 'scale', 'move', 'rotate', 'save', 'circle', 'bezier', 
 
 def parse_file( fname, edges, transform, screen, color ):
     cstack = []
-    cstack.push(ident(new_matrix()))
+    t = new_matrix()
+    ident(t)
+    cstack.append(t)
 
     #temporary polygon matrix
     tempMatrix = []
@@ -67,7 +69,7 @@ def parse_file( fname, edges, transform, screen, color ):
         if line in ARG_COMMANDS:            
             c+= 1
             args = lines[c].strip().split(' ')
-            #print 'args\t' + str(args)
+            # print 'args\t' + str(args)
             
         if line == 'sphere':
             #print 'SPHERE\t' + str(args)
@@ -88,7 +90,7 @@ def parse_file( fname, edges, transform, screen, color ):
             tempMatrix = []
 
         elif line == 'box':
-            #print 'BOX\t' + str(args)
+            print 'BOX\t' + str(args)
             add_box(tempMatrix,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
@@ -131,12 +133,13 @@ def parse_file( fname, edges, transform, screen, color ):
         elif line == 'scale':
             #print 'SCALE\t' + str(args)
             t = make_scale(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(cstack[-1], transform)
+            matrix_mult(cstack[-1], t)
 
         elif line == 'move':
             #print 'MOVE\t' + str(args)
             t = make_translate(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(cstack[-1], transform)
+            matrix_mult(cstack[-1], t)
+            print(cstack[-1])
 
         elif line == 'rotate':
             #print 'ROTATE\t' + str(args)
@@ -148,7 +151,7 @@ def parse_file( fname, edges, transform, screen, color ):
                 t = make_rotY(theta)
             else:
                 t = make_rotZ(theta)
-            matrix_mult(cstack[-1], transform)
+            matrix_mult(cstack[-1], t)
                 
         elif line == 'push':
             current_top = copy.copy(cstack[-1])
